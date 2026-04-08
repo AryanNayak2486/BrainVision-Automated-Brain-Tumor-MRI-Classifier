@@ -1,0 +1,59 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-brainvision}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-brainvision}
+      POSTGRES_DB: ${POSTGRES_DB:-brainvision}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-brainvision}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-brainvision}:${POSTGRES_PASSWORD:-brainvision}@db:5432/${POSTGRES_DB:-brainvision}
+      SECRET_KEY: ${SECRET_KEY:-change-me-in-production-32-char-min}
+      MODEL_PATH: /app/models/inception_v3_brain_tumor.h5
+      DEBUG: ${DEBUG:-false}
+    volumes:
+      - model_data:/app/models
+      - /tmp/uploads:/tmp/uploads
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    environment:
+      REACT_APP_API_URL: /api/v1
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
+  model_data:
