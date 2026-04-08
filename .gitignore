@@ -18,11 +18,13 @@ env/
 frontend/node_modules/
 frontend/build/
 
-# Model weights (large files — add via Docker volume or direct copy)
+# Model weights / large model files
 backend/models/*.h5
 backend/models/*.keras
 backend/models/*.pt
 backend/models/*.pth
+models/*
+!models/.gitkeep
 
 # Uploads / temp
 /tmp/
@@ -42,3 +44,12 @@ backend/models/*.pth
 
 # Alembic cache
 backend/alembic/__pycache__/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Local data and outputs
+data/*
+!data/.gitkeep
+outputs/*
+!outputs/.gitkeep
