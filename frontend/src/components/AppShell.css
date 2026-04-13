@@ -115,6 +115,29 @@
   gap: 0.5rem;
 }
 
+/* ── Theme toggle in sidebar ── */
+.theme-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.6);
+  font-size: 0.82rem;
+  font-weight: 500;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  transition: all var(--transition);
+  width: 100%;
+}
+.theme-toggle-btn:hover {
+  background: rgba(108,99,255,0.15);
+  border-color: rgba(108,99,255,0.3);
+  color: var(--purple-light);
+}
+
 .user-chip {
   display: flex;
   align-items: center;
@@ -261,4 +284,22 @@
     padding: 1rem;
     padding-top: 4rem;
   }
+}
+
+/* ── Dark mode: shell main background ── */
+[data-theme="dark"] .shell-main {
+  background: var(--off-white);
+}
+
+[data-theme="dark"] .card {
+  background: var(--white);
+  border-color: var(--gray-200);
+}
+
+[data-theme="dark"] .page-title,
+[data-theme="dark"] .page-desc,
+[data-theme="dark"] h1,
+[data-theme="dark"] h2,
+[data-theme="dark"] h3 {
+  color: var(--gray-900);
 }

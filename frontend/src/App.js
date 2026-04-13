@@ -2,12 +2,15 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider, useAuth } from './services/AuthContext';
+import { ThemeProvider } from './context/ThemeContext';
 import AppShell from './components/AppShell';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import Predict from './pages/Predict';
 import History from './pages/History';
+import Profile from './pages/Profile';
 
 function PrivateRoute({ children }) {
   const { user, loading } = useAuth();
@@ -29,38 +32,42 @@ function PublicRoute({ children }) {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            style: {
-              fontFamily: 'Inter, sans-serif',
-              fontSize: '0.875rem',
-              borderRadius: '10px',
-            },
-          }}
-        />
-        <Routes>
-          <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
-          <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
-          <Route
-            path="/*"
-            element={
-              <PrivateRoute>
-                <AppShell>
-                  <Routes>
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/predict" element={<Predict />} />
-                    <Route path="/history" element={<History />} />
-                  </Routes>
-                </AppShell>
-              </PrivateRoute>
-            }
+    <ThemeProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              style: {
+                fontFamily: 'Inter, sans-serif',
+                fontSize: '0.875rem',
+                borderRadius: '10px',
+              },
+            }}
           />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+            <Route path="/signup" element={<PublicRoute><Signup /></PublicRoute>} />
+            <Route
+              path="/*"
+              element={
+                <PrivateRoute>
+                  <AppShell>
+                    <Routes>
+                      <Route path="/dashboard" element={<Dashboard />} />
+                      <Route path="/predict" element={<Predict />} />
+                      <Route path="/history" element={<History />} />
+                      <Route path="/profile" element={<Profile />} />
+                      <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                    </Routes>
+                  </AppShell>
+                </PrivateRoute>
+              }
+            />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
